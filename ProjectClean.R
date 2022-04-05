@@ -1,4 +1,4 @@
-data <- read.csv("/Users/corinnesteuk/Documents/STAT310/AutomobileLoan.csv", sep = ",")
+data <- read.csv("Train_Dataset.csv", sep = ",")
 head(data)
 
 sum(is.na(data))
