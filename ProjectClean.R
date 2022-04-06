@@ -23,4 +23,10 @@ data$ID_Days <- as.numeric(data$ID_Days)
 data$Application_Process_Hour <- as.numeric(data$Application_Process_Hour)
 data$Score_Source_3 <- as.numeric(data$Score_Source_3)
 
+sum(is.na(data))
 
+sum(is.na(data$Registration_Days ))
+data$Registration_Days[3]
+typeof(data$Registration_Days[3])
+typeof(data$Client_Occupation[3])
+data$Score_Source_1[2]
