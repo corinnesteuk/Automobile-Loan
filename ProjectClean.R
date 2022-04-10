@@ -30,31 +30,18 @@ data$Employment.Type
 d <- as.list(data)
 dob <- as.list(scan(text=d$Date.of.Birth, what=" "))
 dob <- dmy(dob) 
-data$Date.of.Birth <- dob 
-require(lubridate)
-x_date <- as.Date("2022-01-01")
-as.POSIXct(dob)
-# trying to solve problem of years greater than 2000 (ex. 2068)
-a <- c()
-years <- format(dob, format="%Y")
-years <- as.list(scan(text=years, what=" "))
-years <- as.list(as.integer(years))
-ind <- 1
-for (i in years){
-  if (i>2000){
-    years[ind] <- i-100 
+# this package makes years earlier than "60" as 2060, so this loop changes them back to the twentieth century
+i <- 1
+while (i <= length(dob)){
+  if (year(dob[i])> 2000){
+    year(dob[i]) <- year(dob_l[i])-100
   }
-  ind <- ind +1
+  i <- i+1
 }
-#this separates the month and day, can we join them back with the year?
-m_d <- format(dob, format="%m-%d")
-m_d<- as.list(scan(text=m_d, what=" "))
-#years are right but they are all with april, 9 (month and day)
-x_date2 <- strptime(years, format = "%Y") 
-x_date2 <- as.Date(x_date2)
-#adding a column for age (the month and day of birthdays are all april 9) 
-#but years are right, these may be relatively right depending on when this data
-#was collected
-data['Age'] <- age_calc(x_date2,  units = 'years')
+#We add a new column for the age
+data['Age'] <- age_calc(dob,  units = 'years')
+
+
+
 
 head(data)
