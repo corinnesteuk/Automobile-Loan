@@ -41,7 +41,9 @@ while (i <= length(dob)){
 #We add a new column for the age
 data['Age'] <- age_calc(dob,  units = 'years')
 
-
-
-
+###DISBURSED DATE TO LENGTH TO MONTH COUNT
+#we didn't have the year problem before since all these years are in the 21st century
+dis <- as.list(scan(text=d$DisbursalDate, what=" "))
+dis <- dmy(dis)
+data['Disbursed.Time.Months'] <- age_calc(dis,  units = 'months')
 head(data)
