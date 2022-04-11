@@ -113,7 +113,7 @@ max(prediction)
 #max: 820
 min(prediction)
 #min: 110
-# change minimums for categorizing purposes, since min of known credit scroes is 300
+# change minimums for categorizing purposes, since min of known credit scores is 300
 min(credit_known$credit)
 credit_unknown$credit[credit_unknown$credit < 300] <- 300
 min(credit_unknown$credit)
