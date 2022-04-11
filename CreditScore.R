@@ -30,6 +30,13 @@ sanctioned <- data$PRI.SANCTIONED.AMOUNT
 delinquent <- data$DELINQUENT.ACCTS.IN.LAST.SIX.MONTHS
 disbursed <- data$disbursed_amount
 asset <- data$asset_cost
+age <- data$Age
+credit <- data$PERFORM_CNS.SCORE
 
-df <- cbind()
+#creating a data frame and then subseting only rows with known credit scores
+#this is kept in a dataframe called credit_known to be used in a prediction
+#linear regression model
+df <- data.frame(cbind(no_acc, current_bal, overdue_acct, new_acct, sanctioned,
+            delinquent, disbursed, asset, age, credit))
+credit_known <- df[df$credit>50, ] 
 
