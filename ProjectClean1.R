@@ -47,5 +47,7 @@ dis <- as.list(scan(text=d$DisbursalDate, what=" "))
 dis <- dmy(dis)
 data['Disbursed.Time.Months'] <- age_calc(dis,  units = 'months')
 head(data)
+
+
 write.csv(data,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Clean.csv", row.names = FALSE)
 
