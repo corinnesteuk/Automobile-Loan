@@ -4,7 +4,7 @@ library(lubridate)
 library(plyr) 
 library(eeptools)
 library(dplyr)
-data <- read.csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault.csv", sep = ',')
+data <- read.csv("VehicleLoanDefault.csv", sep = ',')
 head(data)
 
 
@@ -49,4 +49,26 @@ dis <- dmy(dis)
 data['Disbursed.Time.Months'] <- age_calc(dis,  units = 'months')
 head(data)
 
+
+###AVG ACCOUNT AGE & CREDIT HISTORY LENGTH TO LENGTH IN MONTHS
+#Credit history length first:
+data$CREDIT.HISTORY.LENGTH <- regmatches(data$CREDIT.HISTORY.LENGTH, gregexpr("[[:digit:]]+",data$CREDIT.HISTORY.LENGTH))
+
+to_date_in_months <- function(x){
+  as.numeric(unlist(x))[1] * 12 + as.numeric(unlist(x))[2]
+}
+
+data$CREDIT.HISTORY.LENGTH <- lapply(data$CREDIT.HISTORY.LENGTH, to_date_in_months)
+
+#Now Account Age:
+data$AVERAGE.ACCT.AGE <- regmatches(data$AVERAGE.ACCT.AGE, gregexpr("[[:digit:]]+", data$AVERAGE.ACCT.AGE))
+
+to_date_in_months <- function(x){
+  as.numeric(unlist(x))[1] * 12 + as.numeric(unlist(x))[2]
+}
+
+data$AVERAGE.ACCT.AGE <- lapply(data$AVERAGE.ACCT.AGE, to_date_in_months)
+
+
 write.csv(data,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Clean.csv", row.names = FALSE)
+
