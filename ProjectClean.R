@@ -4,7 +4,7 @@ library(lubridate)
 library(plyr) 
 library(eeptools)
 library(dplyr)
-data <- read.csv("VehicleLoanDefault.csv", sep = ',')
+data <- read.csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault.csv", sep = ',')
 head(data)
 
 
@@ -49,26 +49,36 @@ dis <- dmy(dis)
 data['Disbursed.Time.Months'] <- age_calc(dis,  units = 'months')
 head(data)
 
+data1 <- data
 
 ###AVG ACCOUNT AGE & CREDIT HISTORY LENGTH TO LENGTH IN MONTHS
 #Credit history length first:
-data$CREDIT.HISTORY.LENGTH <- regmatches(data$CREDIT.HISTORY.LENGTH, gregexpr("[[:digit:]]+",data$CREDIT.HISTORY.LENGTH))
-
+data1$CREDIT.HISTORY.LENGTH <- regmatches(data1$CREDIT.HISTORY.LENGTH, gregexpr("[[:digit:]]+",data1$CREDIT.HISTORY.LENGTH))
 to_date_in_months <- function(x){
   as.numeric(unlist(x))[1] * 12 + as.numeric(unlist(x))[2]
 }
 
-data$CREDIT.HISTORY.LENGTH <- lapply(data$CREDIT.HISTORY.LENGTH, to_date_in_months)
+#switching from list to vector to impute in data
+x <- lapply(data1$CREDIT.HISTORY.LENGTH, to_date_in_months)
+i <- 1
+v <- seq(1, length(x), 1)
+while (i <= length(x)){
+  v[i] <- as.integer(x[i])
+  i <- i+1
+}
+data1$CREDIT.HISTORY.LENGTH <- v
 
 #Now Account Age:
-data$AVERAGE.ACCT.AGE <- regmatches(data$AVERAGE.ACCT.AGE, gregexpr("[[:digit:]]+", data$AVERAGE.ACCT.AGE))
+data1$AVERAGE.ACCT.AGE <- regmatches(data1$AVERAGE.ACCT.AGE, gregexpr("[[:digit:]]+", data1$AVERAGE.ACCT.AGE))
 
-to_date_in_months <- function(x){
-  as.numeric(unlist(x))[1] * 12 + as.numeric(unlist(x))[2]
+x <- lapply(data1$AVERAGE.ACCT.AGE, to_date_in_months)
+i <- 1
+v <- seq(1, length(x), 1)
+while (i <= length(x)){
+  v[i] <- as.integer(x[i])
+  i <- i+1
 }
+data1$AVERAGE.ACCT.AGE <- v
 
-data$AVERAGE.ACCT.AGE <- lapply(data$AVERAGE.ACCT.AGE, to_date_in_months)
-
-
-write.csv(data,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Clean.csv", row.names = FALSE)
+write.csv(data1,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Clean.csv", row.names = FALSE)
 
