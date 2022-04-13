@@ -126,3 +126,4 @@ full_data <- rbind(credit_known, credit_unknown)
 head(full_data)
 write.csv(full_data,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CleanCredit.csv", row.names = FALSE)
 
+head(full_data)
