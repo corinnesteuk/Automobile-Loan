@@ -45,16 +45,27 @@ df <- rename(df, letter = unlist.letter.)
 df
 df$letter[1]
 
+#appending this to the credit_score_data in another column
+#testing letters with descriptions
+credit_risk[credit_risk$letter=='N', ]
+desc <- c(rep('Very Low Risk', 4), rep('Low Risk', 3), rep('Medium Risk', 2),
+          rep('High Risk', 2), rep('Very High Risk', 2))
+
+df$description <- desc     
+df
+
 #creating a vector with the letter risk score for all entries in the credit_score_data
 #this has all the known and imputed credit scores
-vec <- seq(1, length(credit_score_data$credit))
+vec_l <- seq(1, length(credit_score_data$credit))
+vec_d <- seq(1, length(credit_score_data$credit))
 i <- 1
 while (i <= length(credit_score_data$credit)){
   j <- 1
   while (j <= length(df$risk_min)){
     if (credit_score_data$credit[i] >= as.integer(df$risk_min[j]) 
         & credit_score_data$credit[i] <= as.integer(df$risk_max[j])){
-      vec[i] <- letter[j]
+      vec_l[i] <- letter[j]
+      vec_d[i] <- df$description[j]
       j <- j+1
   }else{
     j <- j+1
@@ -63,15 +74,20 @@ while (i <= length(credit_score_data$credit)){
   i <-i+1
   
 }
-vec
+vec_l
+vec_d
 #appending this to the credit_score_data in another column
-credit_score_data$risk_rating <- vec
+credit_score_data$risk_rating <- unlist(vec_l)
+credit_score_data$risk_description <- vec_d
 
-#now I want to append the risk description that corresponds to the letter
 head(credit_risk)
-v2 <- seq(1, 13, 1)
-while (i<=13){
-  desc <- credit_risk$description[select(where(credit_risk$letter == letter[i]))]
-  v2[i] <- desc
-  i <- i+1
-}
+head(credit_score_data)
+
+
+write.csv(credit_score_data,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CreditModel.csv", row.names = FALSE)
+write.csv(df,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CreditCheatSheet.csv", row.names = FALSE)
+write.csv(credit_risk,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CreditRisk.csv", row.names = FALSE)
+
+
+
+
