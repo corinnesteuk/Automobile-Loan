@@ -11,6 +11,7 @@ credit_risk <- data_frame(full_data$UniqueID, full_data$credit, full_data$risk_r
 head(credit_risk)
 credit_risk <- rename(credit_risk, risk_rating = `full_data$risk_rating`)
 credit_risk <- rename(credit_risk, credit = `full_data$credit`)
+credit_risk <- rename(credit_risk, id = `full_data$UniqueID`)
 credit_risk <- credit_risk[credit_risk$credit>50, ] 
 
 #separating the letter from the risk description

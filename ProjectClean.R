@@ -31,14 +31,16 @@ data$Employment.Type
 d <- as.list(data)
 dob <- as.list(scan(text=d$Date.of.Birth, what=" "))
 dob <- dmy(dob) 
+dob
 # this package makes years earlier than "60" as 2060, so this loop changes them back to the twentieth century
 i <- 1
 while (i <= length(dob)){
   if (year(dob[i])> 2000){
-    year(dob[i]) <- year(dob_l[i])-100
+    year(dob[i]) <- year(dob[i])-100
   }
   i <- i+1
 }
+dob
 #We add a new column for the age
 data['Age'] <- age_calc(dob,  units = 'years')
 
@@ -66,6 +68,7 @@ while (i <= length(x)){
   v[i] <- as.integer(x[i])
   i <- i+1
 }
+v
 data1$CREDIT.HISTORY.LENGTH <- v
 
 #Now Account Age:
@@ -79,6 +82,6 @@ while (i <= length(x)){
   i <- i+1
 }
 data1$AVERAGE.ACCT.AGE <- v
-
+head(data1)
 write.csv(data1,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Clean.csv", row.names = FALSE)
 
