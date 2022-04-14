@@ -13,7 +13,7 @@ head(data)
 data <- data[,!grepl("^SEC",names(data))]
 #dropping other columns that do not pertain to project
 data <- subset(data, select = -c(manufacturer_id, Current_pincode_ID, Driving_flag, Passport_flag, 
-                                 MobileNo_Avl_Flag, Aadhar_flag, PAN_flag, VoterID_flag, UniqueID) )
+                                 MobileNo_Avl_Flag, Aadhar_flag, PAN_flag, VoterID_flag) )
 
 ###CREATING NEW COLUMN PERCENT.DISBURSED
 #we want to create a column of the percentage of the loan given out at this time

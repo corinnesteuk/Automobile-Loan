@@ -1,13 +1,14 @@
 library(dplyr)
 full_data <- read.csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Clean.csv")
 credit_score_data <- read.csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CleanCredit.csv")
-
+head(full_data)
 #renaming credit and risk rating columns in full data
 full_data <- rename(full_data, risk_rating = PERFORM_CNS.SCORE.DESCRIPTION)
 full_data <- rename(full_data, credit = PERFORM_CNS.SCORE)
 
 #data frame with just credit score & risk rating 
-credit_risk <- data_frame(full_data$credit, full_data$risk_rating)
+credit_risk <- data_frame(full_data$UniqueID, full_data$credit, full_data$risk_rating)
+head(credit_risk)
 credit_risk <- rename(credit_risk, risk_rating = `full_data$risk_rating`)
 credit_risk <- rename(credit_risk, credit = `full_data$credit`)
 credit_risk <- credit_risk[credit_risk$credit>50, ] 

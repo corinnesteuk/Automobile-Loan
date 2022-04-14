@@ -38,12 +38,12 @@ age <- data$Age
 ltv <- data$ltv
 credit <- data$PERFORM_CNS.SCORE
 default <- data$loan_default
-
+id <- data$UniqueID
 
 #creating a data frame and then subset only rows with known credit scores
 #this is kept in a data frame called credit_known to be used in a prediction
 #linear regression model
-df <- data.frame(cbind(no_acc, current_bal, overdue_acct, new_acct, sanctioned,
+df <- data.frame(cbind(id, no_acc, current_bal, overdue_acct, new_acct, sanctioned,
             delinquent, disbursed, asset, age, default, ltv, credit))
 credit_known <- df[df$credit>50, ] 
 #Correlation of variables to each other and to credit variable
@@ -102,7 +102,7 @@ sum(credit_known$default)/length(credit_known$default)
 #prediction for unknown credit scores
 prediction <- predict(fit_credit, newdata = credit_unknown)
 prediction
-#replacing adding this to the credit_unknown dataframe
+#replacing adding this to the credit_unknown data frame
 credit_unknown <- cbind(credit_unknown, round(prediction))
 credit_unknown <- rename(credit_unknown, credit = "round(prediction)")
 
@@ -126,4 +126,4 @@ full_data <- rbind(credit_known, credit_unknown)
 head(full_data)
 write.csv(full_data,"/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CleanCredit.csv", row.names = FALSE)
 
-head(full_data)
+
