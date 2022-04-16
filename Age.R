@@ -1,5 +1,7 @@
 library(VGAM)
 library(dplyr)
+library(devtools)
+library(formattable)
 data <- read_csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Final.csv")
 head(data)
 
@@ -45,6 +47,7 @@ na_s <- c("na", "s", 13, 35, 4, 4, 2)
 group_dat <- data.frame(rbind(sal_ya, sal_a, sal_ma, sal_oa, sal_s, se_ya, se_a, se_ma, se_oa, 
       se_s,na_ya, na_a, na_ma, na_oa, na_s ))
 colnames(group_dat)<- c("Employment","AgeGroup","VLR", "LR", "MR", "HR", "VHR")
+rownames(group_dat) <- 1:nrow(group_dat) 
 group_dat$VLR <- as.numeric(group_dat$VLR)
 group_dat$LR <- as.numeric(group_dat$LR)
 group_dat$MR <- as.numeric(group_dat$MR)
@@ -68,6 +71,38 @@ lrtest(fit, fit_p)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+#Creating Visual table for report (changing explanatory value names)
+gd <- data.frame(group_dat)
+gd
+gd$AgeGroup <- replace(gd$AgeGroup, gd$AgeGroup == 'ya', 'Young Adult')
+gd$AgeGroup <- replace(gd$AgeGroup, gd$AgeGroup == 'a', 'Adult')
+gd$AgeGroup <- replace(gd$AgeGroup, gd$AgeGroup == 'ma', 'Middle Adult')
+gd$AgeGroup <- replace(gd$AgeGroup, gd$AgeGroup == 'oa', 'Older Adult')
+gd$AgeGroup <- replace(gd$AgeGroup, gd$AgeGroup == 's', 'Senior')
+gd$Employment <- replace(gd$Employment, gd$Employment == 'sal', 'Salaried')
+gd$Employment <- replace(gd$Employment, gd$Employment == 'se', 'Self Employed')
+gd$Employment <- replace(gd$Employment, gd$Employment == 'na', 'Unknown')
+gd <-gd %>%
+  rowwise() %>%
+  mutate(
+    RowTotals = sum(c(VLR, LR, MR, HR, VHR))
+  )
+col_totals <- c("Column", "Totals", sum(gd$VLR), sum(gd$LR), 
+                sum(gd$MR), sum(gd$HR), sum(gd$VHR),sum(gd$RowTotals))
+gd <- rbind(gd, col_totals)
+formattable(gd)
 
 
 

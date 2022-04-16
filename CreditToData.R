@@ -1,6 +1,7 @@
 library(dplyr)
 library(plyr)
 library(ggplot2)
+
 credit_model <- read.csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CreditModel.csv")
 risk_info <- read.csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CreditCheatSheet.csv")
 credit_risk <- read.csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-CreditRisk.csv")
