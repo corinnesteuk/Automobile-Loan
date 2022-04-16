@@ -58,8 +58,6 @@ ggplot(data = full_data) +
   labs(title="Figure3: Credit Score & Loan Default")+ 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
-
-
-
-
-
+cor(full_data$ltv.y, full_data$asset)
+head(full_data)
+range(full_data$Age)
