@@ -84,9 +84,10 @@ summary(fit_credit)
 #we then included ltv ratio, which is the percentage of the vehicle covered by loan, this takes the place of sanctioned and disbursed
 #should we add default, would this be factor?
 #the model below adds factor(default) & age, removes sanctioned & disbursed
-fit_credit <- lm(credit ~ ltv+current_bal+overdue_acct+new_acct+
+fit_final <- lm(credit ~ ltv+current_bal+overdue_acct+new_acct+
                    delinquent+asset+age+ factor(default), data = credit_known)
-summary(fit_credit)
+summary(fit_final)
+anova(fit_null, fit_final)
 #although age still has a high p-value, we think this should be kept in the model logically 
 
 #this is our test set that we need to use the credit model to predict
@@ -100,7 +101,7 @@ sum(credit_unknown$default)/length(credit_unknown$default)
 sum(credit_known$default)/length(credit_known$default)
 
 #prediction for unknown credit scores
-prediction <- predict(fit_credit, newdata = credit_unknown)
+prediction <- predict(fit_final, newdata = credit_unknown)
 prediction
 #replacing adding this to the credit_unknown data frame
 credit_unknown <- cbind(credit_unknown, round(prediction))
