@@ -70,19 +70,23 @@ lrtest(fit_p, fit0)
 #Estimated Response Category Probabilities --> Plot this?
 probs <- data.frame(group_dat$Employment, group_dat$AgeGroup, fitted(fit_p))
 probs
+emp <- c(rep('sal', 5), rep('se', 5), rep('na', 5))
 formattable(probs)
-
+probs$VLR
+probs1 <- data.frame(rbind(cbind(rep("VLR", 15), as.double(probs$VLR),emp) , cbind(rep("LR", 15), as.double(probs$LR), emp), cbind(rep("MR", 15), as.double(probs$MR), emp), cbind(rep("HR", 15), as.double(probs$HR),emp), cbind(rep("VHR", 15), as.double(probs$VHR), emp)))
+probs1 <- dplyr::rename(probs1, est.prob = V2)
+probs1 <- dplyr::rename(probs1, risk = V1)
+probs1$est.prob <- as.numeric(probs1$est.prob)
+probs1
+probs1$AgeGroup <- rep(c("Senior", "Older Adult", "Middle Adult", "Adult", "Young Adult"), 15)
+probs1
+y <- seq(0, .8, .05)
 #Figure 4: Estimated Category Probabilities
-
-ggplot(data = probs) + 
-  geom_point(aes(group_dat$AgeGroup, fitted(fit_p)))
-    
-             
-             
-             
-             mapping = aes(x = group_dat$AgeGroup, y = fitted(fit_p), color = c("VLR", "LR", "MR", "HR", "VHR"))) + 
-  labs(title="Figure3: Credit Risk Info")
-
+ggplot(data = probs1) + 
+  geom_point(aes(AgeGroup, est.prob, colour = factor(risk), shape  = emp))+
+  scale_y_continuous(name = "Est. Probability", breaks=y)+
+  labs(shape="Employment Type", colour="Risk")
+       
 #Log Odds Ratio
 #salaried vs. unknown
 exp(0.220271)
@@ -93,17 +97,6 @@ exp(0.220271)
 z_2 = (-0.107901/0.007979 )^2
 #Profile Likelihood Confidence Interval 
 exp(confint(fit_p, method = "profile"))
-
-
-
-
-
-
-
-
-
-
-
 
 
 
