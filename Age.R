@@ -2,6 +2,7 @@ library(VGAM)
 library(dplyr)
 library(devtools)
 library(formattable)
+library(ggplot2)
 data <- read_csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Final.csv")
 head(data)
 
@@ -53,21 +54,45 @@ group_dat$LR <- as.numeric(group_dat$LR)
 group_dat$MR <- as.numeric(group_dat$MR)
 group_dat$HR <- as.numeric(group_dat$HR)
 group_dat$VHR <- as.numeric(group_dat$VHR)
-fit <- vglm(cbind(VLR, LR, MR, HR, VHR) ~ Employment + AgeGroup, family = cumulative,
-            data = group_dat)
+group_dat$AgeGroup <- factor(c("s", "oa", "ma", "a", "ya"), levels = c("s", "oa", "ma", "a", "ya"))
+
+group_dat$AgeGroup
+#analyzing model (setting parallel = TRUE)
 fit_p <- vglm(cbind(VLR, LR, MR, HR, VHR) ~ Employment + AgeGroup, family = cumulative(parallel = TRUE),
             data = group_dat)
-summary(fit)
 summary(fit_p)
 fit0 <- vglm(cbind(VLR, LR, MR, HR, VHR) ~ 1, family = cumulative,
             data = group_dat)
-lrtest(fit, fit0)
+
+#Likelihood Ratio Test
 lrtest(fit_p, fit0)
 
-lrtest(fit, fit_p)
-# I think this is suggesting that the complex model (parallel = FALSE) is better
-#since there is little variability between any explanatory variables and the response
+#Estimated Response Category Probabilities --> Plot this?
+probs <- data.frame(group_dat$Employment, group_dat$AgeGroup, fitted(fit_p))
+probs
+formattable(probs)
 
+#Figure 4: Estimated Category Probabilities
+
+ggplot(data = probs) + 
+  geom_point(aes(group_dat$AgeGroup, fitted(fit_p)))
+    
+             
+             
+             
+             mapping = aes(x = group_dat$AgeGroup, y = fitted(fit_p), color = c("VLR", "LR", "MR", "HR", "VHR"))) + 
+  labs(title="Figure3: Credit Risk Info")
+
+#Log Odds Ratio
+#salaried vs. unknown
+exp(0.220271)
+#young adult vs. senior
+1/exp(-0.080214)
+
+#Wald Stat for Age Group = Adult (a)
+z_2 = (-0.107901/0.007979 )^2
+#Profile Likelihood Confidence Interval 
+exp(confint(fit_p, method = "profile"))
 
 
 
