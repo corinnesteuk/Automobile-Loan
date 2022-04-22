@@ -114,14 +114,14 @@ y3 <- r[31:45]
 y4 <- r[46:60]
 probs_r <- (cbind(probs, y1, y2, y3, y4))
 ggplot(data = probs_r) + 
-  geom_point(aes(group_dat.AgeGroup , y1, color = 'VLR'))+
+  geom_point(aes(group_dat.AgeGroup , y1, color = 'VLR', shape = group_dat$Employment))+
   geom_point(aes(group_dat.AgeGroup , y2, color = 'LR'))+
   geom_point(aes(group_dat.AgeGroup , y3, color = 'MR'))+
   geom_point(aes(group_dat.AgeGroup , y4, color = 'HR'))+
   scale_y_continuous(name = "Residuals")+
   scale_x_discrete(name = "AgeGroup", labels = c('Senior', 'Older Adult', "Middle Adult", 'Adult', 'Young Adult'))+
-  labs(color = "Risk")+
-  ggtitle("Figure5: Residuals")
+  labs(color = "Risk", shape = 'Employment')+
+  ggtitle("Figure5: AgeResiduals")
 
 
 probs_r
