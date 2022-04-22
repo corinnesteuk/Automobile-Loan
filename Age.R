@@ -3,6 +3,9 @@ library(dplyr)
 library(devtools)
 library(formattable)
 library(ggplot2)
+library(rethinker)
+library(tidyverse)
+library(ggExtra)
 data <- read_csv("/Users/corinnesteuk/Documents/STAT310/VehicleLoanDefault-Final.csv")
 head(data)
 
@@ -85,11 +88,16 @@ y <- seq(0, .8, .05)
 ggplot(data = probs1) + 
   geom_point(aes(AgeGroup, est.prob, colour = factor(risk), shape  = emp))+
   scale_y_continuous(name = "Est. Probability", breaks=y)+
-  labs(shape="Employment Type", colour="Risk")
+  labs(shape="Employment Type", colour="Risk")+
+  ggtitle("Figure4: Estimated Category Probabilities")
        
 #Log Odds Ratio
 #salaried vs. unknown
 exp(0.220271)
+#salaried vs. self-employed
+exp(0.220271 - 0.004855)
+#adult vs. senior
+1/exp(-0.107901)
 #young adult vs. senior
 1/exp(-0.080214)
 
@@ -98,9 +106,25 @@ z_2 = (-0.107901/0.007979 )^2
 #Profile Likelihood Confidence Interval 
 exp(confint(fit_p, method = "profile"))
 
+#Residuals
+r <- residuals(fit_p)
+y1 <- r[1:15]
+y2<- r[16:30]
+y3 <- r[31:45]
+y4 <- r[46:60]
+probs_r <- (cbind(probs, y1, y2, y3, y4))
+ggplot(data = probs_r) + 
+  geom_point(aes(group_dat.AgeGroup , y1, color = 'VLR'))+
+  geom_point(aes(group_dat.AgeGroup , y2, color = 'LR'))+
+  geom_point(aes(group_dat.AgeGroup , y3, color = 'MR'))+
+  geom_point(aes(group_dat.AgeGroup , y4, color = 'HR'))+
+  scale_y_continuous(name = "Residuals")+
+  scale_x_discrete(name = "AgeGroup", labels = c('Senior', 'Older Adult', "Middle Adult", 'Adult', 'Young Adult'))+
+  labs(color = "Risk")+
+  ggtitle("Figure5: Residuals")
 
 
-
+probs_r
 #Creating Visual table for report (changing explanatory value names)
 gd <- data.frame(group_dat)
 gd
