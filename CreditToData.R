@@ -15,7 +15,7 @@ full_data <- merge(credit_model, data, by = "id")
 head(full_data)
 
 #Dropping duplicate columns including columns that we changed the format for  - DOC & Disbursal Date)
-full_data <- subset(full_data, select = -c(PERFORM_CNS.SCORE.DESCRIPTION, PERFORM_CNS.SCORE, Date.of.Birth, DisbursalDate) )
+full_data <- subset(full_data, select = -c(PERFORM_CNS.SCORE.DESCRIPTION, PERFORM_CNS.SCORE, Date.of.Birth, DisbursalDate, acct_age,credit_age ) )
 #more cleaning - renaming columns
 full_data <- dplyr::rename(full_data, risk_rate = letter)
 full_data <- dplyr::rename(full_data, risk_desc = description)

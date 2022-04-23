@@ -39,12 +39,14 @@ ltv <- data$ltv
 credit <- data$PERFORM_CNS.SCORE
 default <- data$loan_default
 id <- data$UniqueID
+acct_age <- data$AVERAGE.ACCT.AGE
+credit_age <- data$CREDIT.HISTORY.LENGTH
 
 #creating a data frame and then subset only rows with known credit scores
 #this is kept in a data frame called credit_known to be used in a prediction
 #linear regression model
 df <- data.frame(cbind(id, no_acc, current_bal, overdue_acct, new_acct, sanctioned,
-            delinquent, disbursed, asset, age, default, ltv, credit))
+            delinquent, disbursed, asset, age, default, ltv, credit, acct_age,credit_age  ))
 credit_known <- df[df$credit>50, ] 
 #Correlation of variables to each other and to credit variable
 cor(credit_known)
@@ -54,7 +56,7 @@ credit_cor
 
 #fitting logistic regression model on the known credit scores
 fit_credit <- lm(credit ~ no_acc+current_bal+overdue_acct+new_acct+sanctioned+
-                   delinquent+disbursed+asset+age+default, data = credit_known)
+                   delinquent+disbursed+asset+age+acct_age+credit_age+default, data = credit_known)
 fit_null <- lm(credit~1, data = credit_known)
 summary(fit_credit) 
 #no_acc and age have high p values, we could look to see if they should be removed
@@ -85,7 +87,7 @@ summary(fit_credit)
 #should we add default, would this be factor?
 #the model below adds factor(default) & age, removes sanctioned & disbursed
 fit_final <- lm(credit ~ ltv+current_bal+overdue_acct+new_acct+
-                   delinquent+asset+age+ factor(default), data = credit_known)
+                   delinquent+asset+age+ acct_age+credit_age+factor(default), data = credit_known)
 summary(fit_final)
 anova(fit_null, fit_final)
 #although age still has a high p-value, we think this should be kept in the model logically 
