@@ -88,6 +88,7 @@ probs1$est.prob <- as.numeric(probs1$est.prob)
 probs1
 probs1$AgeGroup <- rep(c("Senior", "Older Adult", "Middle Adult", "Adult", "Young Adult"), 15)
 probs1
+formattable(probs1)
 y <- seq(0, .8, .05)
 #Figure 4: Estimated Category Probabilities
 ggplot(data = probs1) + 
