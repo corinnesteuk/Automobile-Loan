@@ -21,7 +21,11 @@ lrtest(fit, fit0)
 summary(fit)
 
 #predicted values for making an ROC curve
-predict(fit, type = "response")
+preds <- fitted(fit)
+library(pROC)
+rocplot <- roc(loan_default ~ preds, data=data)
+plot.roc(rocplot, legacy.axes=TRUE)
+auc(rocplot)
 
 #subsetting data where people used two forms of ID and defaulted
 #would like to figure out what were the most common pairings of IDs and then test for independence
@@ -129,3 +133,11 @@ sum(IDs == 10) #973
 sum(IDs == 1001) #845
 #Passport
 sum(IDs == 10000) #369
+
+data$Age_cat <- cut(data$Age,
+                    
+                  breaks=c(20, 30, 40, 50, 60, 75),
+                  labels=c('Young Adult', 'Adult', 'Middle Adult', 'Older Adult', "Senior"))
+
+table(data$IDs, data$Age_cat)
+

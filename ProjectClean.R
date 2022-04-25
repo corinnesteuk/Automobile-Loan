@@ -30,12 +30,12 @@ data$Employment.Type
 ###CONVERTING DATE.OF.BIRTH TO AGE 
 d <- as.list(data)
 dob <- as.list(scan(text=d$Date.of.Birth, what=" "))
-dob <- dmy(dob) 
+dob <- dmy(d$Date.of.Birth)
 # this package makes years earlier than "60" as 2060, so this loop changes them back to the twentieth century
 i <- 1
 while (i <= length(dob)){
   if (year(dob[i])> 2000){
-    year(dob[i]) <- year(dob_l[i])-100
+    year(dob[i]) <- year(dob[i])-100
   }
   i <- i+1
 }
