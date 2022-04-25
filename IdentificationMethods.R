@@ -19,6 +19,7 @@ fit0 <- glm(loan_default ~ 1, family = binomial, data = data)
 fit <- glm(loan_default ~ data$Aadhar_flag + PAN_flag + VoterID_flag + Driving_flag + Passport_flag, family = binomial, data = data)
 lrtest(fit, fit0)
 summary(fit)
+fit$
 
 #predicted values for making an ROC curve
 preds <- fitted(fit)
@@ -32,11 +33,17 @@ auc(rocplot)
 yum <- data[rowSums(data[15:19]) == 2,c(15, 16, 17, 18, 19, 34)]
 yum[yum$loan_default == 1,]
 levels(as.factor(data$Aadhar_flag))
+
+#function to turn 5 ID columns into 1
 binary_levels <- function(x, y, z, p, d){
   return (x + y * 10 + z * 100 + p * 1000 + d * 10000)
 }
 IDs <- binary_levels(data$Aadhar_flag, data$PAN_flag, data$VoterID_flag, data$Driving_flag, data$Passport_flag)
 levels(as.factor(IDs))
+data$IDs <- IDs
+prop.table(table(data$IDs, data$loan_default), margin = 1)
+
+#ID Frequencies
 #One ID
 #Aadhar
 sum(IDs == 1) #182745
@@ -94,14 +101,7 @@ sum(IDs == 1111) #3
 sum(IDs == 10111) #1
 data[IDs == 10111,] #Please just show us that you can drive
 
-data$IDs <- IDs
-help(table)
-prop.table(table(data$IDs, data$loan_default, responseNames = c("Return", "Default")), margin = 1)
-
-library(gee)
-fit.gee <- gee(loan_default ~ Aadhar_flag + PAN_flag + VoterID_flag + Driving_flag + Passport_flag, id = UniqueID, family=binomial,
-  corstr="unstructured", data=data, scale.fix = F)
-help(gee)
+#Correlation between ID forms
 cor(data$Aadhar_flag, data$PAN_flag)
 cor(data$Aadhar_flag, data$VoterID_flag)
 cor(data$Aadhar_flag, data$Driving_flag)
@@ -112,43 +112,23 @@ cor(data$PAN_flag, data$Passport_flag)
 cor(data$VoterID_flag, data$Driving_flag)
 cor(data$VoterID_flag, data$Passport_flag)
 cor(data$Driving_flag, data$Passport_flag)
-#WHAT ID Combos Did We Not See?
 
-#Aadhar
-sum(IDs == 1) #182745
-#VoterID
-sum(IDs == 100) #25251
-#Aadhar & PAN Flag (11)
-sum(IDs == 11) #9933
-#Voter ID & PAN Flag (110)
-sum(IDs == 110) #6095
-#Driving
-sum(IDs == 1000) #4051
-#Aadhar & Voter ID (101)
-sum(IDs == 101) #2005
-#PAN
-sum(IDs == 10) #973
-#Aadhar & Driving Flag(1001)
-sum(IDs == 1001) #845
-#Passport
-sum(IDs == 10000) #369
-
+#Making age categories
 data$Age_cat <- cut(data$Age,
                     
                   breaks=c(20, 30, 40, 50, 60, 75),
                   labels=c('Young Adult', 'Adult', 'Middle Adult', 'Older Adult', "Senior"))
 
+#Chi Squared Test btwn. Age Categories and ID Types
 tabs <- table(data$Age_cat[IDs %in% c(1, 10, 1000, 100, 10000, 11, 110, 101, 1001, 111)], data$IDs[IDs %in% c(1, 10, 1000, 100, 10000, 11, 110, 101, 1001, 111)])
 chisq.test(tabs)
 stdres <- chisq.test(tabs)$stdres # standardized residuals
-library(vcdExtra)
-CMHtest(tabs, rscores = c(0, 1, 2, 3, 4))
 
-employ_vs_ID <- table(no_blanks$Employment.Type[IDs %in% c(1, 10, 1000, 100, 10000, 11, 110, 101, 1001, 111)], no_blanks$IDs[IDs %in% c(1, 10, 1000, 100, 10000, 11, 110, 101, 1001, 111)])
-chisq.test(employ_vs_ID)
-stdres_employ <- chisq.test(employ_vs_ID)$stdres # standardized residuals
-library(vcdExtra)
-CMHtest(tabs, rscores = c(0, 1, 2, 3, 4))
+#Chi-squared test btwn. # of IDs used and Default Rate
+forms <- table(rowSums(data[15:19])[rowSums(data[15:19]) < 4], data$loan_default[rowSums(data[15:19]) < 4])
+chisq.test(forms)
+rowSums(data[15:19])[rowSums(data[15:19]) < 4]
+stdres <- chisq.test(forms)$stdres
 
 library(ggplot2)
 #Figure 8
@@ -164,4 +144,3 @@ ggplot(data = smaller_data) +
   geom_bar(aes(x = as.factor(IDs), fill = factor(loan_default)), position = 'dodge')+ 
   labs(title="Figure9: ID Types & Loan Default Subset")+ 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
