@@ -95,8 +95,8 @@ sum(IDs == 10111) #1
 data[IDs == 10111,] #Please just show us that you can drive
 
 data$IDs <- IDs
-
-prop.table(table(data$IDs, data$loan_default), margin = 1)
+help(table)
+prop.table(table(data$IDs, data$loan_default, responseNames = c("Return", "Default")), margin = 1)
 
 library(gee)
 fit.gee <- gee(loan_default ~ Aadhar_flag + PAN_flag + VoterID_flag + Driving_flag + Passport_flag, id = UniqueID, family=binomial,
@@ -114,7 +114,6 @@ cor(data$VoterID_flag, data$Passport_flag)
 cor(data$Driving_flag, data$Passport_flag)
 #WHAT ID Combos Did We Not See?
 
-#One ID
 #Aadhar
 sum(IDs == 1) #182745
 #VoterID
@@ -139,5 +138,30 @@ data$Age_cat <- cut(data$Age,
                   breaks=c(20, 30, 40, 50, 60, 75),
                   labels=c('Young Adult', 'Adult', 'Middle Adult', 'Older Adult', "Senior"))
 
-table(data$IDs, data$Age_cat)
+tabs <- table(data$Age_cat[IDs %in% c(1, 10, 1000, 100, 10000, 11, 110, 101, 1001, 111)], data$IDs[IDs %in% c(1, 10, 1000, 100, 10000, 11, 110, 101, 1001, 111)])
+chisq.test(tabs)
+stdres <- chisq.test(tabs)$stdres # standardized residuals
+library(vcdExtra)
+CMHtest(tabs, rscores = c(0, 1, 2, 3, 4))
+
+employ_vs_ID <- table(no_blanks$Employment.Type[IDs %in% c(1, 10, 1000, 100, 10000, 11, 110, 101, 1001, 111)], no_blanks$IDs[IDs %in% c(1, 10, 1000, 100, 10000, 11, 110, 101, 1001, 111)])
+chisq.test(employ_vs_ID)
+stdres_employ <- chisq.test(employ_vs_ID)$stdres # standardized residuals
+library(vcdExtra)
+CMHtest(tabs, rscores = c(0, 1, 2, 3, 4))
+
+library(ggplot2)
+#Figure 8
+prop.table(table(data$Age_cat))
+ggplot(data = data) + 
+  geom_bar(aes(x = as.factor(IDs), fill = factor(loan_default)), position = 'dodge')+ 
+  labs(title="Figure8: ID Types & Loan Default")+ xlab("IDs Presented") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+#Figure 9
+smaller_data <- data[IDs != 1,]
+ggplot(data = smaller_data) + 
+  geom_bar(aes(x = as.factor(IDs), fill = factor(loan_default)), position = 'dodge')+ 
+  labs(title="Figure9: ID Types & Loan Default Subset")+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
